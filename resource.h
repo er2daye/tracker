@@ -57,7 +57,10 @@
 #define IDC_STATIC_JPGPARA              1047
 #define IDC_BTN_ARM_OPEN                1049
 #define IDC_BTN_CAMERA_OPEN             1049
-#define IDC_CAMERA_SHOW                 1050
+#define IDC_CAMERA2_SHOW                1050
+#define IDC_BTN_START_TRACKING          1052
+#define IDC_CAMERA1_SHOW                1053
+#define IDC_BUTTON1                     1054
 #define IDC_COMBO_CRUISE_ROUTE          1085
 #define IDC_COMBO_CRUISE_POINT          1087
 #define IDC_COMBO_CRUISE_PRESET         1088
@@ -76,7 +79,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1051
+#define _APS_NEXT_CONTROL_VALUE         1055
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

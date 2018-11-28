@@ -11,6 +11,7 @@
 #include "GeneralDef.h"
 #include "PTZButton.h"
 #include "Camera.h"
+#include "kcf\kcftracker.h"
 /////////////////////////////////////////////////////////////////////////////
 // CRealPlayDlg dialog
 
@@ -135,15 +136,22 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
-	Camera *m_camera;
+	Camera *m_camera1;
+	Camera *m_camera2;
+	KCFTracker tracker;
+	char picBuffer[1300*1000*4];
 	afx_msg LRESULT OnComReceive(WPARAM wParam, LPARAM lParam);  
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedBtnCameraOpen();
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedBtnStartTracking();
+	void Paint(Camera *cam, Mat frame);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	int state = 0;
-	CPoint pointCenter;
-	CPoint pointRight;
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	void myOnLButtonDown(Camera *cam, CPoint point);
+	void myOnMouseMove(Camera *cam, CPoint point);
+	void myOLButtonUp(Camera *cam, CPoint point);
 };
 
 //{{AFX_INSERT_LOCATION}}

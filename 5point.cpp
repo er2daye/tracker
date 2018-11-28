@@ -339,3 +339,4 @@ void ProjectionsFromEssential(const cv::Mat &E, cv::Mat &P1, cv::Mat &P2, cv::Ma
     P3(cv::Range::all(), cv::Range(3,4)) = U(cv::Range::all(), cv::Range(2,3))*1;
     P4(cv::Range::all(), cv::Range(3,4)) = -U(cv::Range::all(), cv::Range(2,3));
 }
+

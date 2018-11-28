@@ -11,6 +11,7 @@ Copyright 2008-2011 Digital Technology Co., Ltd.
 #include "RealPlay.h"
 #include "PTZButton.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -205,3 +206,6 @@ void CPTZButton::PTZControlAll(LONG lRealHandle, DWORD dwPTZCommand, DWORD dwSto
 	}
 
 }
+
+
+

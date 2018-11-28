@@ -1,0 +1,43 @@
+﻿生成启动时间为 2018/11/28 11:31:38。
+     1>项目“E:\icme2019\RealPlay\RealPlay\RealPlay.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         D:\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /ID:\Downloads\opencv\build\include /ID:\Downloads\opencv\build\include\opencv2 /ID:\Downloads\opencv\build\include\opencv /Zi /nologo /W3 /WX- /sdl /Od /D WIN32 /D _WINDOWS /D _DEBUG /D _CRT_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_DEPRECATE /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt RealPlayDlg.cpp
+         RealPlayDlg.cpp
+     1>D:\Microsoft Visual Studio 12.0\VC\atlmfc\include\afx.h(38): warning C4996: 'MBCS_Support_Deprecated_In_MFC': MBCS support in MFC is deprecated and may be removed in a future version of MFC.
+                 D:\Microsoft Visual Studio 12.0\VC\atlmfc\include\afx.h(33) : 参见“MBCS_Support_Deprecated_In_MFC”的声明
+         _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+     1>e:\icme2019\realplay\realplay\CnComm.h(557): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
+     1>e:\icme2019\realplay\realplay\CnComm.h(564): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
+     1>e:\icme2019\realplay\realplay\CnComm.h(1172): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
+     1>e:\icme2019\realplay\realplay\CnComm.h(1177): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
+     1>e:\icme2019\realplay\realplay\CnComm.h(1210): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
+     1>e:\icme2019\realplay\realplay\CnComm.h(1216): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
+     1>e:\icme2019\realplay\realplay\CnComm.h(1480): warning C4267: “=”: 从“size_t”转换到“DWORD”，可能丢失数据
+     1>e:\icme2019\realplay\realplay\CnComm.h(1482): warning C4267: “=”: 从“size_t”转换到“DWORD”，可能丢失数据
+     1>D:\Downloads\opencv\build\include\opencv2/core/mat.hpp(1965): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\Downloads\opencv\build\include\opencv2/core/persistence.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\Downloads\opencv\build\include\opencv2/core/utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>RealPlayDlg.cpp(460): warning C4244: “初始化”: 从“DWORD_PTR”转换到“DWORD”，可能丢失数据
+     1>RealPlayDlg.cpp(571): warning C4244: “初始化”: 从“DWORD_PTR”转换到“DWORD”，可能丢失数据
+     1>RealPlayDlg.cpp(731): warning C4010: 单行注释包含行继续符
+     1>RealPlayDlg.cpp(1446): warning C4244: “初始化”: 从“LONG”转换到“float”，可能丢失数据
+     1>RealPlayDlg.cpp(1447): warning C4244: “初始化”: 从“LONG”转换到“float”，可能丢失数据
+     1>RealPlayDlg.cpp(1448): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+       Link:
+         D:\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"E:\icme2019\RealPlay\x64\Debug\RealPlay.exe" /INCREMENTAL /NOLOGO /LIBPATH:D:\Downloads\opencv\build\x64\vc12\lib /LIBPATH:./lib/ HCNetSDK.lib opencv_world310d.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"D:\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"E:\icme2019\RealPlay\x64\Debug\RealPlay.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\icme2019\RealPlay\x64\Debug\RealPlay.lib" /MACHINE:X64 x64\Debug\RealPlay.res
+         x64\Debug\5point.obj
+         x64\Debug\Camera.obj
+         x64\Debug\CvvImage.obj
+         x64\Debug\DlgPTZCruise.obj
+         x64\Debug\PoseCalculator.obj
+         x64\Debug\PTZButton.obj
+         x64\Debug\RealPlay.obj
+         x64\Debug\RealPlayDlg.obj
+         x64\Debug\Rpoly.obj
+         x64\Debug\stdafx.obj
+         RealPlay.vcxproj -> E:\icme2019\RealPlay\x64\Debug\RealPlay.exe
+     1>已完成生成项目“E:\icme2019\RealPlay\RealPlay\RealPlay.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:02.97

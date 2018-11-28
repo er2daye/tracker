@@ -1,0 +1,36 @@
+﻿生成启动时间为 2018/11/21 21:06:33。
+     1>项目“D:\Projects\vs\RealPlay\RealPlay\RealPlay.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         D:\Software\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\RealPlay.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         D:\Software\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\RealPlay.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Camera.cpp CvvImage.cpp DlgPTZCruise.cpp PTZButton.cpp RealPlay.cpp RealPlayDlg.cpp
+         RealPlayDlg.cpp
+     1>d:\projects\vs\realplay\realplay\cncomm.h(385): error C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\software\microsoft visual studio 11.0\vc\include\string.h(288) : 参见“wcscpy”的声明
+     1>d:\projects\vs\realplay\realplay\cvvimage.h(4): fatal error C1083: 无法打开包括文件:“opencv2/highgui/highgui.hpp”: No such file or directory
+         PTZButton.cpp
+     1>d:\projects\vs\realplay\realplay\cncomm.h(385): error C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\software\microsoft visual studio 11.0\vc\include\string.h(288) : 参见“wcscpy”的声明
+     1>d:\projects\vs\realplay\realplay\cvvimage.h(4): fatal error C1083: 无法打开包括文件:“opencv2/highgui/highgui.hpp”: No such file or directory
+         DlgPTZCruise.cpp
+     1>d:\projects\vs\realplay\realplay\cncomm.h(385): error C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\software\microsoft visual studio 11.0\vc\include\string.h(288) : 参见“wcscpy”的声明
+     1>d:\projects\vs\realplay\realplay\cvvimage.h(4): fatal error C1083: 无法打开包括文件:“opencv2/highgui/highgui.hpp”: No such file or directory
+         CvvImage.cpp
+     1>d:\projects\vs\realplay\realplay\cvvimage.h(4): fatal error C1083: 无法打开包括文件:“opencv2/highgui/highgui.hpp”: No such file or directory
+         Camera.cpp
+     1>d:\projects\vs\realplay\realplay\cncomm.h(385): error C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\software\microsoft visual studio 11.0\vc\include\string.h(288) : 参见“wcscpy”的声明
+     1>d:\projects\vs\realplay\realplay\cvvimage.h(4): fatal error C1083: 无法打开包括文件:“opencv2/highgui/highgui.hpp”: No such file or directory
+         正在生成代码...
+         正在编译...
+         RealPlay.cpp
+     1>d:\projects\vs\realplay\realplay\cncomm.h(385): error C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\software\microsoft visual studio 11.0\vc\include\string.h(288) : 参见“wcscpy”的声明
+     1>d:\projects\vs\realplay\realplay\cvvimage.h(4): fatal error C1083: 无法打开包括文件:“opencv2/highgui/highgui.hpp”: No such file or directory
+         正在生成代码...
+     1>已完成生成项目“D:\Projects\vs\RealPlay\RealPlay\RealPlay.vcxproj”(Build 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:08.51

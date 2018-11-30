@@ -12,6 +12,7 @@
 #include "PTZButton.h"
 #include "Camera.h"
 #include "kcf\kcftracker.h"
+#include "PoseCalculator.h"
 /////////////////////////////////////////////////////////////////////////////
 // CRealPlayDlg dialog
 
@@ -138,20 +139,29 @@ protected:
 public:
 	Camera *m_camera1;
 	Camera *m_camera2;
-	KCFTracker tracker;
+	Camera *m_camera3;
+	CnComm *m_arm;
+	PoseCalculator poseCal;
+	int haveMove = 0;
+	int picNum = 0;
 	char picBuffer[1300*1000*4];
 	afx_msg LRESULT OnComReceive(WPARAM wParam, LPARAM lParam);  
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedBtnCameraOpen();
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedBtnStartTracking();
-	void Paint(Camera *cam, Mat frame);
+	void Paint(Camera *cam, Mat &frame);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	void myOnLButtonDown(Camera *cam, CPoint point);
 	void myOnMouseMove(Camera *cam, CPoint point);
 	void myOLButtonUp(Camera *cam, CPoint point);
+	afx_msg void OnBnClickedBtnUarmLeft();
+	afx_msg void OnBnClickedBtnUarmRight();
+	afx_msg void OnBnClickedBtnUarmStop();
+	afx_msg void OnBnClickedBtnUarmUp();
+	afx_msg void OnBnClickedBtnUarmDown();
 };
 
 //{{AFX_INSERT_LOCATION}}

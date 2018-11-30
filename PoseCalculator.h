@@ -10,8 +10,9 @@ class PoseCalculator
 public:
 	PoseCalculator(void);
 	~PoseCalculator(void);
-	void getMatch(Mat &img_1, Mat &img_2);
+	void getMatch(const Mat &img_1, const Mat &img_2);
 	void computePose(const vector<Point2f> &inPoints1, const vector<Point2f> &inPoints2, const Mat &K, Mat &R, Mat &T);
+	void computePoseFromImage(const cv::Mat &img_1, cv::Mat &img_2, const cv::Mat &K, cv::Mat &R, cv::Mat &t);
 
 };
 

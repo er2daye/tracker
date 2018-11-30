@@ -112,7 +112,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\Downloads\opencv\build\include;D:\Downloads\opencv\build\include\opencv2;D:\Downloads\opencv\build\include\opencv;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Downloads\opencv\build\include;D:\Downloads\opencv\build\include\opencv2;D:\Downloads\opencv\build\include\opencv;D:\eigen-3.3.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -211,6 +211,7 @@
     <ClInclude Include="Rpoly.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Triangulation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="5point.cpp" />
@@ -230,6 +231,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Triangulation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RealPlay.rc" />

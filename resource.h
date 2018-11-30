@@ -61,6 +61,12 @@
 #define IDC_BTN_START_TRACKING          1052
 #define IDC_CAMERA1_SHOW                1053
 #define IDC_BUTTON1                     1054
+#define IDC_BTN_UARM_LEFT               1055
+#define IDC_BUTTON4                     1057
+#define IDC_BTN_UARM_UP                 1058
+#define IDC_BTN_UARM_RIGHT              1059
+#define IDC_BTN_UARM_STOP               1060
+#define IDC_BTN_UARM_DOWN               1062
 #define IDC_COMBO_CRUISE_ROUTE          1085
 #define IDC_COMBO_CRUISE_POINT          1087
 #define IDC_COMBO_CRUISE_PRESET         1088
@@ -79,7 +85,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1055
+#define _APS_NEXT_CONTROL_VALUE         1060
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

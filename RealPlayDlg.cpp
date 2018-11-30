@@ -13,6 +13,7 @@ Copyright 2008-2011 Digital Technology Co., Ltd.
 #include "RealPlayDlg.h"
 #include "DlgPTZCruise.h"
 #include <algorithm>
+#include <Eigen/Dense>
 
 
 #ifdef _DEBUG
@@ -95,8 +96,10 @@ CRealPlayDlg::CRealPlayDlg(CWnd* pParent /*=NULL*/)
 	m_bAuxOn1= FALSE;
 	m_bAuxOn2= FALSE;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-
-	
+//	m_btnPtzUp.m_realPlay = this;
+//	m_btnPtzDown.m_realPlay = this;
+//	m_btnPtzLeft.m_realPlay = this;
+//	m_btnPtzRight.m_realPlay = this;
 }
 
 void CRealPlayDlg::DoDataExchange(CDataExchange* pDX)
@@ -156,6 +159,11 @@ BEGIN_MESSAGE_MAP(CRealPlayDlg, CDialog)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
+	ON_BN_CLICKED(IDC_BTN_UARM_LEFT, &CRealPlayDlg::OnBnClickedBtnUarmLeft)
+	ON_BN_CLICKED(IDC_BTN_UARM_RIGHT, &CRealPlayDlg::OnBnClickedBtnUarmRight)
+	ON_BN_CLICKED(IDC_BTN_UARM_STOP, &CRealPlayDlg::OnBnClickedBtnUarmStop)
+	ON_BN_CLICKED(IDC_BTN_UARM_UP, &CRealPlayDlg::OnBnClickedBtnUarmUp)
+	ON_BN_CLICKED(IDC_BTN_UARM_DOWN, &CRealPlayDlg::OnBnClickedBtnUarmDown)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -220,17 +228,12 @@ BOOL CRealPlayDlg::OnInitDialog()
 	m_coJpgQuality.EnableWindow(FALSE);
 
 	//camera init
-	m_camera1 = new Camera;
-	m_camera2 = new Camera;
-	m_camera1->IDC_CAMERA_SHOW =  IDC_CAMERA1_SHOW;
-	m_camera2->IDC_CAMERA_SHOW =  IDC_CAMERA2_SHOW;
-	CRect rect;
-	GetDlgItem(m_camera1->IDC_CAMERA_SHOW)->GetClientRect(rect);
-	m_camera1->heightOfScreen = rect.Height();
-	m_camera1->widthOfScreen = rect.Width();
-	GetDlgItem(m_camera2->IDC_CAMERA_SHOW)->GetClientRect(rect);
-	m_camera2->heightOfScreen = rect.Height();
-	m_camera2->widthOfScreen = rect.Width();
+	CRect rect1, rect2;
+	GetDlgItem(IDC_CAMERA1_SHOW)->GetClientRect(rect1);
+	GetDlgItem(IDC_CAMERA2_SHOW)->GetClientRect(rect2);
+	m_arm = new CnComm;
+	m_camera1 = new Camera(3, IDC_CAMERA1_SHOW, rect1.Height(), rect1.Width(), m_arm);
+	m_camera2 = new Camera(2, IDC_CAMERA2_SHOW, rect2.Height(), rect2.Width(), m_arm);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -737,38 +740,43 @@ void CRealPlayDlg::OnButtonCapture()
 	}
 	UpdateData(TRUE);
 
-	char PicName[256] = {"./capture/1.jpg"};
+	char PicName[256];
 	
 	int iPicType = m_coPicType.GetCurSel();
-	iPicType = 1;
-	if(0 == iPicType)  //bmp
+	if(1 == iPicType)  //bmp
 	{
-		CTime CurTime = CTime::GetCurrentTime();;
-		sprintf(PicName,"%04d%02d%02d%02d%02d%02d_ch%02d.bmp",CurTime.GetYear(),CurTime.GetMonth(),CurTime.GetDay(), \
-			CurTime.GetHour(),CurTime.GetMinute(),CurTime.GetSecond(),m_struDeviceInfo.struChanInfo[GetCurChanIndex()].iChanIndex);
+		//CTime CurTime = CTime::GetCurrentTime();;
+		//sprintf(PicName,"%04d%02d%02d%02d%02d%02d_ch%02d.bmp",CurTime.GetYear(),CurTime.GetMonth(),CurTime.GetDay(), \
+			//CurTime.GetHour(),CurTime.GetMinute(),CurTime.GetSecond(),m_struDeviceInfo.struChanInfo[GetCurChanIndex()].iChanIndex);
     
-		if(NET_DVR_CapturePicture(m_lPlayHandle,PicName))
+		sprintf(PicName, "./capture/1-%d.jpg", picNum++);
+		if (imwrite(PicName, m_camera2->frame))
 		{
 			MessageBox("抓图成功!");
 		}
 	}
-	else if(1 == iPicType)  //jpg
+	else if(0 == iPicType)  //jpg
 	{
 		CTime CurTime = CTime::GetCurrentTime();;
 		//sprintf(PicName,"%04d%02d%02d%02d%02d%02d_ch%02d.jpg",CurTime.GetYear(),CurTime.GetMonth(),CurTime.GetDay(), \
 			CurTime.GetHour(),CurTime.GetMinute(),CurTime.GetSecond(),m_struDeviceInfo.struChanInfo[GetCurChanIndex()].iChanIndex);
 		//组建jpg结构
+		sprintf(PicName, "./capture/2-%d.jpg", picNum++);
 		NET_DVR_JPEGPARA JpgPara = {0};
         JpgPara.wPicSize = (WORD)m_coJpgSize.GetCurSel();
 		JpgPara.wPicQuality = (WORD)m_coJpgQuality.GetCurSel();
 
 		LONG iCurChan = m_struDeviceInfo.struChanInfo[GetCurChanIndex()].iChanIndex;
 
-		if(NET_DVR_CaptureJPEGPicture(m_struDeviceInfo.lLoginID, iCurChan, &JpgPara, PicName))
+		if(m_camera1->idx == 1 && (m_struDeviceInfo.lLoginID, iCurChan, &JpgPara, PicName))
 		{
 			MessageBox("抓图成功");
 		}
 		
+		if (m_camera1->idx == 3 && imwrite(PicName, m_camera1->frame))
+		{
+			MessageBox("抓图成功!");
+		}
 	}
 	
 	return;	
@@ -1437,10 +1445,17 @@ void CRealPlayDlg::OnClose()
 void CRealPlayDlg::OnBnClickedBtnCameraOpen()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_camera2->cap.open(0);
 	//SetTimer(2, 40, NULL);
-	SetTimer(1, 40, NULL);
-	//m_camera->Open();
+	if(m_arm->IsOpen()){
+		m_arm->Close();
+	}
+	if (!m_arm->Open(comId, 115200, NOPARITY, 8, ONESTOPBIT)) {
+		MessageBox("fail connect");
+	}
+	m_camera2->Open();
+	m_camera1->Open();
+
+	SetTimer(1, 50, NULL);
 	//m_camera->m_com.SetWnd(AfxGetMainWnd()->m_hWnd);
 	//m_camera->Reset();
 
@@ -1450,7 +1465,7 @@ afx_msg LRESULT CRealPlayDlg::OnComReceive(WPARAM wParam, LPARAM lParam)
 {
    //读取串口上的字符
    char buf[1024];
-   m_camera2->m_com.ReadString(buf, 1024);  //ReadString适合读一般字符串，Read函数适合读取任意数据
+   m_arm->ReadString(buf, 1024);  //ReadString适合读一般字符串，Read函数适合读取任意数据
    return 0;
 }
 
@@ -1461,13 +1476,12 @@ void CRealPlayDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 	case 1:
 		{
-			Mat frame;
-			NET_DVR_CapturePictureBlock(0, "./capture/1.jpg", 100);
-			frame = imread("./capture/1.jpg");
-			Paint(m_camera1, frame);
+			Mat frame1, frame2;
+			frame1 = m_camera1->GetFrame();
+			Paint(m_camera1, frame1);
 			
-			m_camera2->cap >> frame;
-			Paint(m_camera2, frame);
+			frame2 = m_camera2->GetFrame();
+			Paint(m_camera2, frame2);
 		}
 		break;
 	case 2:
@@ -1487,21 +1501,18 @@ void CRealPlayDlg::OnBnClickedButton1()
 	int iPTZSpeed = g_pMainDlg->GetPTZSpeed();
 	bool ret;
 	clock_t begin = clock();
-	for (int i = 0; i < 25; i++) {
+	//for (int i = 0; i < 25; i++) {
 		ret = NET_DVR_PTZControlWithSpeed(lPlayHandle,PAN_RIGHT,0,iPTZSpeed);
 		if(!ret)
 		{
 			MessageBox("云台控制失败!");
 		}
-		//Sleep(40);
+		Sleep(40);
 		NET_DVR_PTZControlWithSpeed(lPlayHandle,PAN_RIGHT,1,iPTZSpeed);
-	}
+	//}
 	clock_t end = clock();
 	double err = 1.0 * (end - begin) / CLOCKS_PER_SEC;
-	CString m_csErr;
-	m_csErr.Format("%lf",err);
-	MessageBox(m_csErr);
-
+	haveMove = 1;
 }
 
 
@@ -1513,7 +1524,45 @@ void CRealPlayDlg::OnBnClickedBtnStartTracking()
 
 }
 
-void CRealPlayDlg::Paint(Camera *cam, Mat frame) {
+void CRealPlayDlg::Paint(Camera *cam, Mat &frame) {
+	if (haveMove && cam->idx == 2) {
+		/*
+		cv::Mat R, t;
+		haveMove = 0;
+		cap >> frame;
+		poseCal.computePoseFromImage(cam->frame, frame, cam->K, R, t);
+		TRACE("R size: %d %d %d\n", R.cols, R.rows, R.type());
+		TRACE("Angles : %lf %lf %lf\n", R.at<double>(0, 0), R.at<double>(1, 1));
+		Eigen::Matrix3d rotate;
+		Eigen::Vector3d angles;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				rotate(i, j) = R.at<double>(i, j);
+			}
+		}
+		double sy = std::sqrt(rotate(0, 0) * rotate(0, 0) + rotate(1, 0) * rotate(1, 0));
+
+		bool singular = sy < 1e-6; // If
+
+		double x, y, z;
+		if (!singular)
+		{
+			x = std::atan2(rotate(2, 1), rotate(2, 2));
+			y = std::atan2(-rotate(2, 0), sy);
+			z = std::atan2(rotate(1, 0), rotate(0, 0));
+		}
+		else
+		{
+			x = std::atan2(-rotate(1, 2), rotate(1, 1));
+			y = std::atan2(-rotate(2, 0), sy);
+			z = 0;
+		}
+		angles = Eigen::Vector3d(x, y, z);
+		TRACE("Angles : %lf %lf %lf\n", angles(0), angles(1), angles(2));
+		*/
+	}
+	cam->frame = frame;
+
 	CDC* pDC;
 	HDC hDC;
 	CvvImage cimg;
@@ -1522,24 +1571,28 @@ void CRealPlayDlg::Paint(Camera *cam, Mat frame) {
 
 	pDC = GetDlgItem(cam->IDC_CAMERA_SHOW)->GetDC();     //根据ID获得窗口指针再获取与该窗口关联的上下文指针
 	hDC = pDC->GetSafeHdc();      // 获取设备上下文句柄 
-	img = frame;
+	img = cam->frame;
 	cimg.CopyOf(&img);    //复制该帧图像
 	GetDlgItem(cam->IDC_CAMERA_SHOW)->GetClientRect(&rect);
 	double scalex = 1.0 * frame.cols / cam->widthOfScreen, scaley = 1.0 *  frame.rows/ cam->heightOfScreen;
     if (cam->isTracking && cam->drawBox) {
         cam->TrackFromImage(frame);
+		if (cam->idx == 2) cam->CameraMove(2);
     }
 	else {
 		cam->boundingBox = cv::Rect(scalex * cam->topCornerOfShowBox.x, scaley * cam->topCornerOfShowBox.y, scalex * (cam->bottomCornerOfShowBox.x - cam->topCornerOfShowBox.x), scaley * (cam->bottomCornerOfShowBox.y - cam->topCornerOfShowBox.y));
 	}
 	cimg.DrawToHDC(hDC, &rect);   //显示到设备的矩形框内
 	if(cam->drawBox) {
+		CPen pen;
+		pen.CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
 		pDC = GetDlgItem(cam->IDC_CAMERA_SHOW)->GetDC();     //根据ID获得窗口指针再获取与该窗口关联的上下文指针
 		CRect drawRect = CRect(max(0.0, cam->boundingBox.x / scalex), max(0.0, cam->boundingBox.y / scaley), min(cam->widthOfScreen, (cam->boundingBox.x + cam->boundingBox.width) / scalex), min(cam->heightOfScreen, (cam->boundingBox.y + cam->boundingBox.height) / scaley));
+		pDC->SelectObject(pen);
 		pDC->SelectStockObject(NULL_BRUSH);
 		pDC->Rectangle(&drawRect);
 	}	
-		ReleaseDC(pDC);
+	ReleaseDC(pDC);
 
 }
 
@@ -1607,4 +1660,50 @@ void CRealPlayDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	ClientToScreen(&point);//将鼠标坐标转换成屏幕坐标
 	myOLButtonUp(m_camera1, point);
 	myOLButtonUp(m_camera2, point);
+}
+
+
+
+void CRealPlayDlg::OnBnClickedBtnUarmLeft()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (m_camera2) {
+		m_camera2->MoveToPolarPosition(10, 0, 0, 12000, 2);
+	}
+}
+
+
+void CRealPlayDlg::OnBnClickedBtnUarmRight()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (m_camera2) {
+		m_camera2->MoveToPolarPosition(-10, 0, 0, 12000, 2);
+	}
+}
+
+
+void CRealPlayDlg::OnBnClickedBtnUarmStop()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (m_camera2) {
+		m_camera2->StopMovement();
+	}
+}
+
+
+void CRealPlayDlg::OnBnClickedBtnUarmUp()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (m_camera2) {
+		m_camera2->MoveToPolarPosition(0, 0, 30, 1000, 2);
+	}
+}
+
+
+void CRealPlayDlg::OnBnClickedBtnUarmDown()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (m_camera2) {
+		m_camera2->MoveToPolarPosition(0, 0, -30, 1000, 2);
+	}
 }

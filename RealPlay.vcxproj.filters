@@ -87,6 +87,9 @@
     <ClInclude Include="kcf\tracker.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Triangulation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RealPlay.cpp">
@@ -123,6 +126,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="kcf\kcftracker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangulation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

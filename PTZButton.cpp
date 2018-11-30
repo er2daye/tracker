@@ -54,6 +54,7 @@ END_MESSAGE_MAP()
 *************************************************/
 void CPTZButton::OnLButtonDown(UINT nFlags, CPoint point) 
 {
+	//m_realPlay->isMoving++;
 	LONG lPlayHandle = g_pMainDlg->GetPlayHandle();
 	int iPTZSpeed = g_pMainDlg->GetPTZSpeed();
 	switch(m_iSubBtnIndex)
@@ -171,6 +172,8 @@ void CPTZButton::OnLButtonUp(UINT nFlags, CPoint point)
 		break;
 	}
 	CButton::OnLButtonUp(nFlags, point);
+	//m_realPlay->haveMove++;
+	//m_realPlay->isMoving--;
 }
 
 /*************************************************

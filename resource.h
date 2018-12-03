@@ -62,11 +62,14 @@
 #define IDC_CAMERA1_SHOW                1053
 #define IDC_BUTTON1                     1054
 #define IDC_BTN_UARM_LEFT               1055
+#define IDC_BTN_UARM_LEFT2              1056
+#define IDC_BTN_UARM_RESET              1056
 #define IDC_BUTTON4                     1057
 #define IDC_BTN_UARM_UP                 1058
 #define IDC_BTN_UARM_RIGHT              1059
 #define IDC_BTN_UARM_STOP               1060
 #define IDC_BTN_UARM_DOWN               1062
+#define IDC_PATH1_SHOW                  1063
 #define IDC_COMBO_CRUISE_ROUTE          1085
 #define IDC_COMBO_CRUISE_POINT          1087
 #define IDC_COMBO_CRUISE_PRESET         1088

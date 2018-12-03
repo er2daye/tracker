@@ -26,18 +26,49 @@ public:
 	bool bBoxInit;
 	bool drawBox;
 	cv::Rect boundingBox;
+	cv::Rect preBoundingBox;
 	cv::Point2f centerOfBox;
-    cv::Point2f centerOfWindow;
+    cv::Point2f centerOfImage;
 	CPoint topCornerOfShowBox;
 	CPoint bottomCornerOfShowBox;
 	double widthOfScreen;
 	double heightOfScreen;
 	int IDC_CAMERA_SHOW;
 	int mouseState;
+
+	// track : update boundingBox, centerofBox
 	KCFTracker tracker;
 	void TrackerInit();
-	void TrackFromImage(Mat nowFrame);
+	bool TrackFromImage(Mat nowFrame);
+	void TrackFromReal3D(const cv::Mat &pt3d);
+
 	void CameraMove(int cameraModel);
+
+	void CameraMoveFromReal3D(int cameraModel, cv::Mat pt3d);
+
+	// Set Real3d From triangulation
+	// Update real3d, offset, depth
+	void SetReal3D(const cv::Mat &pt);
+	// Get Real3d from estimate by boundingbox
+	cv::Mat GetReal3D();
+	bool move;
+	// camera in*** parameters 3*3
+	cv::Mat K;
+	// camera pose 4*4
+	cv::Mat T;
+	// camera delta rotate 3*3
+	cv::Mat R;
+	// center of object in real world
+	cv::Mat real3d;
+	// offset of real3d from triangulation and image point
+	cv::Point2f offset;
+	double depth;
+
+	float angleAlly;
+	vector<pair<double, double> > path;
+
+	//0: not tracking 1: already to tracking 2: tracking 3:lost but in 4:lost
+	int state;
 	
 	//camera2
 	VideoCapture cap;
@@ -53,10 +84,5 @@ public:
 	void MoveToAbsolutePosition(double x, double y, double z, double speed, int model);
     void MoveToPolarPosition(double r, double s, double h, double speed, int model);
 	void StopMovement();
-	bool move;
-	cv::Mat K;
-	cv::Mat T;
-	cv::Mat R;
-	float angleAlly;
 };
 

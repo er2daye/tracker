@@ -150,7 +150,9 @@ public:
 	afx_msg void OnBnClickedBtnCameraOpen();
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedBtnStartTracking();
+	void Track(Camera *cam, Mat &frame);
 	void Paint(Camera *cam, Mat &frame);
+	void PathShow(Camera *cam);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
@@ -162,6 +164,7 @@ public:
 	afx_msg void OnBnClickedBtnUarmStop();
 	afx_msg void OnBnClickedBtnUarmUp();
 	afx_msg void OnBnClickedBtnUarmDown();
+	afx_msg void OnBnClickedBtnUarmReset();
 };
 
 //{{AFX_INSERT_LOCATION}}

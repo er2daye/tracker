@@ -1,4 +1,4 @@
-﻿生成启动时间为 2018/11/30 15:21:42。
+﻿生成启动时间为 2018/12/2 21:49:09。
      1>项目“E:\icme2019\RealPlay\RealPlay\RealPlay.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          D:\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /ID:\Downloads\opencv\build\include /ID:\Downloads\opencv\build\include\opencv2 /ID:\Downloads\opencv\build\include\opencv /I"D:\eigen-3.3.4" /Zi /nologo /W3 /WX- /sdl /Od /D WIN32 /D _WINDOWS /D _DEBUG /D _CRT_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_DEPRECATE /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Camera.cpp
@@ -17,22 +17,21 @@
      1>D:\Downloads\opencv\build\include\opencv2/core/mat.hpp(1965): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>D:\Downloads\opencv\build\include\opencv2/core/persistence.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>D:\Downloads\opencv\build\include\opencv2/core/utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>Camera.cpp(22): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(23): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(24): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(25): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(30): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(31): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(32): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(33): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(38): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(39): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(40): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(41): warning C4305: “=”: 从“double”到“float”截断
-     1>Camera.cpp(181): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-     1>Camera.cpp(182): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-     1>Camera.cpp(195): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(203): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(225): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>Camera.cpp(226): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>Camera.cpp(235): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(236): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+     1>Camera.cpp(237): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+     1>Camera.cpp(256): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(271): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(295): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(318): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(319): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+     1>Camera.cpp(320): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+     1>Camera.cpp(321): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(323): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(331): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>Camera.cpp(345): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
        Link:
          D:\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"E:\icme2019\RealPlay\x64\Debug\RealPlay.exe" /INCREMENTAL /NOLOGO /LIBPATH:D:\Downloads\opencv\build\x64\vc12\lib /LIBPATH:./lib/ HCNetSDK.lib opencv_world310d.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"D:\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"E:\icme2019\RealPlay\x64\Debug\RealPlay.pdb" /SUBSYSTEM:WINDOWS /STACK:"16000000" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\icme2019\RealPlay\x64\Debug\RealPlay.lib" /MACHINE:X64 x64\Debug\RealPlay.res
          x64\Debug\5point.obj
@@ -53,4 +52,4 @@
 
 生成成功。
 
-已用时间 00:00:02.17
+已用时间 00:00:02.83

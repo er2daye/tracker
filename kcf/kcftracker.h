@@ -100,7 +100,7 @@ public:
     virtual void init(const cv::Rect &roi, cv::Mat image);
 
     // Update position based on the new frame
-    virtual cv::Rect update(cv::Mat image);
+    virtual cv::Rect update(cv::Mat image, float &value, bool &isok);
 
     float interp_factor; // linear interpolation factor for adaptation
     float sigma; // gaussian kernel bandwidth
@@ -141,6 +141,11 @@ protected:
     cv::Mat _num;
     cv::Mat _den;
     cv::Mat _labCentroids;
+
+	//mine
+	float last_value;
+	float last_fail_value;
+	
 
 private:
     int size_patch[3];

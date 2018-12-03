@@ -91,10 +91,10 @@ the use of this software, even if advised of the possibility of such damage.
 // Constructor
 KCFTracker::KCFTracker(bool hog, bool fixed_window, bool multiscale, bool lab)
 {
-
     // Parameters equal in all cases
+	last_fail_value = 100;
     lambda = 0.0001;
-    padding = 2.5;
+    padding = 3;
     //output_sigma_factor = 0.1;
     output_sigma_factor = 0.125;
 
@@ -170,7 +170,7 @@ void KCFTracker::init(const cv::Rect &roi, cv::Mat image)
     train(_tmpl, 1.0); // train with initial frame
  }
 // Update position based on the new frame
-cv::Rect KCFTracker::update(cv::Mat image)
+cv::Rect KCFTracker::update(cv::Mat image, float &value, bool &isok)
 {
     if (_roi.x + _roi.width <= 0) _roi.x = -_roi.width + 1;
     if (_roi.y + _roi.height <= 0) _roi.y = -_roi.height + 1;
@@ -183,6 +183,12 @@ cv::Rect KCFTracker::update(cv::Mat image)
 
     float peak_value;
     cv::Point2f res = detect(_tmpl, getFeatures(image, 0, 1.0f), peak_value);
+	value = peak_value;
+	if (value < last_value - 0.2 && value < last_fail_value + 0.1) {
+		isok = false;
+		last_fail_value = last_value;
+		return cv::Rect();
+	}
 
     if (scale_step != 1) {
         // Test at a smaller _scale
@@ -219,6 +225,14 @@ cv::Rect KCFTracker::update(cv::Mat image)
     if (_roi.y + _roi.height <= 0) _roi.y = -_roi.height + 2;
 
     assert(_roi.width >= 0 && _roi.height >= 0);
+
+	value = peak_value;
+	if (value < last_value - 0.15) {
+		isok = false;
+		return cv::Rect();
+	}
+	last_value = value;
+
     cv::Mat x = getFeatures(image, 0);
     train(x, interp_factor);
 

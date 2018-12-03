@@ -12,6 +12,7 @@ Copyright 2008-2011 Digital Technology Co., Ltd.
 #include "RealPlay.h"
 #include "RealPlayDlg.h"
 #include "DlgPTZCruise.h"
+#include "Triangulation.h"
 #include <algorithm>
 #include <Eigen/Dense>
 
@@ -164,6 +165,7 @@ BEGIN_MESSAGE_MAP(CRealPlayDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_UARM_STOP, &CRealPlayDlg::OnBnClickedBtnUarmStop)
 	ON_BN_CLICKED(IDC_BTN_UARM_UP, &CRealPlayDlg::OnBnClickedBtnUarmUp)
 	ON_BN_CLICKED(IDC_BTN_UARM_DOWN, &CRealPlayDlg::OnBnClickedBtnUarmDown)
+	ON_BN_CLICKED(IDC_BTN_UARM_RESET, &CRealPlayDlg::OnBnClickedBtnUarmReset)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1478,10 +1480,43 @@ void CRealPlayDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			Mat frame1, frame2;
 			frame1 = m_camera1->GetFrame();
-			Paint(m_camera1, frame1);
-			
 			frame2 = m_camera2->GetFrame();
+
+			Track(m_camera1, frame1);
+			Track(m_camera2, frame2);
+
+			if (m_camera1->state == 2 && m_camera2->state == 2) {
+				cv::Mat test = triangulation(m_camera1->centerOfBox, m_camera2->centerOfBox, m_camera1, m_camera2);
+				cv::Mat real3d(3, 1, CV_64F);
+				double dtest = test.at<double>(3);
+				for (int i = 0; i < 3; i++) real3d.at<double>(i) = test.at<double>(i) / dtest;
+				TRACE("triangulation : %f %f %f \n", real3d.at<double>(0), real3d.at<double>(1), real3d.at<double>(2));
+				m_camera1->SetReal3D(real3d);
+				m_camera2->SetReal3D(real3d);
+			}
+
+			if (m_camera1->state >= 2 || m_camera1->state == 3) m_camera1->CameraMove(2);
+			if (m_camera2->state >= 2 || m_camera2->state == 3) m_camera2->CameraMove(2);
+
+			Paint(m_camera1, frame1);
 			Paint(m_camera2, frame2);
+
+			/*
+			if (m_camera2->state == 1) {
+
+				cv::Mat test = triangulation(m_camera1->centerOfBox, m_camera2->centerOfBox, m_camera1, m_camera2);
+				cv::Mat real3d(3, 1, CV_64F);
+				double dtest = test.at<double>(3);
+				for (int i = 0; i < 3; i++) real3d.at<double>(i) = test.at<double>(i) / dtest;
+				TRACE("triangulation : %f %f %f \n", real3d.at<double>(0), real3d.at<double>(1), real3d.at<double>(2));
+				m_camera1->SetReal3D(real3d);
+				m_camera2->SetReal3D(real3d);
+				// test
+				m_camera1->state = 1;
+				m_camera2->state = 2;
+
+			}
+			*/
 		}
 		break;
 	case 2:
@@ -1521,7 +1556,26 @@ void CRealPlayDlg::OnBnClickedBtnStartTracking()
 	// TODO: 在此添加控件通知处理程序代码
 	m_camera1->isTracking = true;
 	m_camera2->isTracking = true;
+	if (m_camera1->state == 1) {
+		m_camera1->state = 2;
+	}
+	if (m_camera2->state == 1) {
+		m_camera2->state = 2;
+	}
 
+}
+
+void CRealPlayDlg::Track(Camera *cam, Mat &frame) {
+	cam->frame = frame;
+	if (cam->state == 2 || cam->state == 3) {
+		bool isok = cam->TrackFromImage(frame);
+		if (!isok) cam->state = 3;
+		if (isok) cam->state = 2;
+	}
+	if (cam->state == 3) {
+		cv::Mat pt3d = m_camera1->GetReal3D();
+		cam->TrackFromReal3D(pt3d);
+	}
 }
 
 void CRealPlayDlg::Paint(Camera *cam, Mat &frame) {
@@ -1561,8 +1615,6 @@ void CRealPlayDlg::Paint(Camera *cam, Mat &frame) {
 		TRACE("Angles : %lf %lf %lf\n", angles(0), angles(1), angles(2));
 		*/
 	}
-	cam->frame = frame;
-
 	CDC* pDC;
 	HDC hDC;
 	CvvImage cimg;
@@ -1575,15 +1627,13 @@ void CRealPlayDlg::Paint(Camera *cam, Mat &frame) {
 	cimg.CopyOf(&img);    //复制该帧图像
 	GetDlgItem(cam->IDC_CAMERA_SHOW)->GetClientRect(&rect);
 	double scalex = 1.0 * frame.cols / cam->widthOfScreen, scaley = 1.0 *  frame.rows/ cam->heightOfScreen;
-    if (cam->isTracking && cam->drawBox) {
-        cam->TrackFromImage(frame);
-		if (cam->idx == 2) cam->CameraMove(2);
-    }
-	else {
+	if (cam->mouseState == 1) {
 		cam->boundingBox = cv::Rect(scalex * cam->topCornerOfShowBox.x, scaley * cam->topCornerOfShowBox.y, scalex * (cam->bottomCornerOfShowBox.x - cam->topCornerOfShowBox.x), scaley * (cam->bottomCornerOfShowBox.y - cam->topCornerOfShowBox.y));
+		cam->preBoundingBox = cam->boundingBox;
 	}
 	cimg.DrawToHDC(hDC, &rect);   //显示到设备的矩形框内
-	if(cam->drawBox) {
+	if(cam->mouseState == 1 || cam->state == 1 || cam->state == 2) {
+		
 		CPen pen;
 		pen.CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
 		pDC = GetDlgItem(cam->IDC_CAMERA_SHOW)->GetDC();     //根据ID获得窗口指针再获取与该窗口关联的上下文指针
@@ -1592,8 +1642,44 @@ void CRealPlayDlg::Paint(Camera *cam, Mat &frame) {
 		pDC->SelectStockObject(NULL_BRUSH);
 		pDC->Rectangle(&drawRect);
 	}	
+	if (cam->state == 3) {
+		CPen pen;
+		pen.CreatePen(PS_SOLID, 3, RGB(0, 255, 255));
+		pDC = GetDlgItem(cam->IDC_CAMERA_SHOW)->GetDC();     //根据ID获得窗口指针再获取与该窗口关联的上下文指针
+		CRect drawRect = CRect(max(0.0, cam->boundingBox.x / scalex), max(0.0, cam->boundingBox.y / scaley), min(cam->widthOfScreen, (cam->boundingBox.x + cam->boundingBox.width) / scalex), min(cam->heightOfScreen, (cam->boundingBox.y + cam->boundingBox.height) / scaley));
+		pDC->SelectObject(pen);
+		pDC->SelectStockObject(NULL_BRUSH);
+		pDC->Rectangle(&drawRect);
+	}
+	if (cam->state == 4) {
+		CPen pen;
+		pen.CreatePen(PS_SOLID, 3, RGB(0, 0, 255));
+		pDC = GetDlgItem(cam->IDC_CAMERA_SHOW)->GetDC();     //根据ID获得窗口指针再获取与该窗口关联的上下文指针
+		CRect drawRect = CRect(max(0.0, cam->boundingBox.x / scalex), max(0.0, cam->boundingBox.y / scaley), min(cam->widthOfScreen, (cam->boundingBox.x + cam->boundingBox.width) / scalex), min(cam->heightOfScreen, (cam->boundingBox.y + cam->boundingBox.height) / scaley));
+		pDC->SelectObject(pen);
+		pDC->SelectStockObject(NULL_BRUSH);
+		pDC->Rectangle(&drawRect);
+	}
+	if (cam->state == 2 || cam->state == 3) {
+		PathShow(cam);
+	}
 	ReleaseDC(pDC);
+}
 
+void CRealPlayDlg::PathShow(Camera *cam) {
+	if (cam->idx == 2 && cam->path.size() >= 2) {
+		CDC* pDC = GetDlgItem(IDC_PATH1_SHOW)->GetDC();
+		CPen pen;
+		pen.CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+		pDC->SelectObject(pen);
+		double pretx = cam->path[cam->path.size() - 2].second * cos(cam->path[cam->path.size() - 2].first) * 50 + 30;
+		double prety = cam->path[cam->path.size() - 2].second * sin(cam->path[cam->path.size() - 2].first) * 50 + 30;
+		double tx = cam->path[cam->path.size() - 1].second * cos(cam->path[cam->path.size() - 1].first) * 50 + 30;
+		double ty = cam->path[cam->path.size() - 1].second * sin(cam->path[cam->path.size() - 1].first) * 50 + 30;
+		pDC->MoveTo(prety, pretx);
+		pDC->LineTo(ty, tx);
+		TRACE("point : %f %f\n ", cam->path[cam->path.size() - 1].second, cam->path[cam->path.size() - 1].first / acos(-1) * 180);
+	}
 }
 
 void CRealPlayDlg::myOnLButtonDown(Camera *cam, CPoint point) {
@@ -1603,7 +1689,6 @@ void CRealPlayDlg::myOnLButtonDown(Camera *cam, CPoint point) {
 	if (rect.PtInRect(point))//判断point是否在rect内部
 	{
 		if(cam->mouseState == 0) {
-			cam->drawBox = true;
 			cam->topCornerOfShowBox.x = point.x - rect.left; 
 			cam->topCornerOfShowBox.y = point.y - rect.top;
 			cam->bottomCornerOfShowBox.x = point.x - rect.left; 
@@ -1646,6 +1731,7 @@ void CRealPlayDlg::myOLButtonUp(Camera *cam, CPoint point) {
 	GetDlgItem(cam->IDC_CAMERA_SHOW)->ClientToScreen(rect);//转换成屏幕坐标
 	if (rect.PtInRect(point)){//判断point是否在rect内部
 		if(cam->mouseState == 1) {
+			cam->state = 1;
 			cam->bottomCornerOfShowBox.x = point.x - rect.left; 
 			cam->bottomCornerOfShowBox.y = point.y - rect.top;
 			cam->mouseState = 2;
@@ -1705,5 +1791,14 @@ void CRealPlayDlg::OnBnClickedBtnUarmDown()
 	// TODO:  在此添加控件通知处理程序代码
 	if (m_camera2) {
 		m_camera2->MoveToPolarPosition(0, 0, -30, 1000, 2);
+	}
+}
+
+
+void CRealPlayDlg::OnBnClickedBtnUarmReset()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (m_camera2) {
+		m_camera2->Reset();
 	}
 }

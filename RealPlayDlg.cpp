@@ -236,9 +236,9 @@ BOOL CRealPlayDlg::OnInitDialog()
 	GetDlgItem(IDC_CAMERA1_SHOW)->GetClientRect(rect1);
 	GetDlgItem(IDC_CAMERA2_SHOW)->GetClientRect(rect2);
 	m_arm = new CnComm;
-	m_camera1 = new Camera(3, IDC_CAMERA1_SHOW, rect1.Height(), rect1.Width(), m_arm);
-	m_camera2 = new Camera(2, IDC_CAMERA2_SHOW, rect2.Height(), rect2.Width(), m_arm);
-	p_recive = new thread(&Camera::Recive, m_camera2);
+	m_camera1 = new FCamera(IDC_CAMERA1_SHOW, rect1.Height(), rect1.Width());
+	m_camera2 = new ACamera(IDC_CAMERA2_SHOW, rect2.Height(), rect2.Width(), m_arm);
+	//p_recive = new thread(&ACamera::Recive, m_camera2);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -738,11 +738,6 @@ void CRealPlayDlg::StopRecord()
 **************************************************/
 void CRealPlayDlg::OnButtonCapture() 
 {
-	if(m_lPlayHandle == -1)
-	{
-        MessageBox("请先选择一个通道播放");
-		return;
-	}
 	UpdateData(TRUE);
 
 	char PicName[256];
@@ -760,8 +755,13 @@ void CRealPlayDlg::OnButtonCapture()
 			MessageBox("抓图成功!");
 		}
 	}
-	else if(0 == iPicType)  //jpg
+	else if(2 == iPicType)  //jpg
 	{
+		if (m_lPlayHandle == -1)
+		{
+			MessageBox("请先选择一个通道播放");
+			return;
+		}
 		CTime CurTime = CTime::GetCurrentTime();;
 		//sprintf(PicName,"%04d%02d%02d%02d%02d%02d_ch%02d.jpg",CurTime.GetYear(),CurTime.GetMonth(),CurTime.GetDay(), \
 			CurTime.GetHour(),CurTime.GetMinute(),CurTime.GetSecond(),m_struDeviceInfo.struChanInfo[GetCurChanIndex()].iChanIndex);
@@ -773,12 +773,14 @@ void CRealPlayDlg::OnButtonCapture()
 
 		LONG iCurChan = m_struDeviceInfo.struChanInfo[GetCurChanIndex()].iChanIndex;
 
-		if(m_camera1->idx == 1 && (m_struDeviceInfo.lLoginID, iCurChan, &JpgPara, PicName))
+		if(NET_DVR_CaptureJPEGPicture(m_struDeviceInfo.lLoginID, iCurChan, &JpgPara, PicName))
 		{
 			MessageBox("抓图成功");
 		}
 		
-		if (m_camera1->idx == 3 && imwrite(PicName, m_camera1->frame))
+	}
+	else if (iPicType == 0) {
+		if (imwrite(PicName, m_camera1->frame))
 		{
 			MessageBox("抓图成功!");
 		}
@@ -1451,13 +1453,8 @@ void CRealPlayDlg::OnBnClickedBtnCameraOpen()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	//SetTimer(2, 40, NULL);
-	if(m_arm->IsOpen()){
-		m_arm->Close();
-	}
-	if (!m_arm->Open(comId, 115200, NOPARITY, 8, ONESTOPBIT)) {
-		MessageBox("fail connect");
-	}
-	else m_camera2->isopen = true;
+	m_camera2->OpenPlatform();
+	m_camera1->OpenPlatform();
 	m_camera2->Open();
 	m_camera1->Open();
 
@@ -1499,8 +1496,8 @@ void CRealPlayDlg::OnTimer(UINT_PTR nIDEvent)
 				m_camera2->SetReal3D(real3d);
 			}
 
-			if (m_camera1->state >= 2 || m_camera1->state == 3) m_camera1->CameraMove(2);
-			if (m_camera2->state >= 2 || m_camera2->state == 3) m_camera2->CameraMove(2);
+			if (m_camera1->state >= 2 || m_camera1->state == 3) m_camera1->CameraMove();
+			if (m_camera2->state >= 2 || m_camera2->state == 3) m_camera2->CameraMove();
 
 			Paint(m_camera1, frame1);
 			Paint(m_camera2, frame2);
@@ -1583,8 +1580,8 @@ void CRealPlayDlg::Track(Camera *cam, Mat &frame) {
 }
 
 void CRealPlayDlg::Paint(Camera *cam, Mat &frame) {
+		/* five point test
 	if (haveMove && cam->idx == 2) {
-		/*
 		cv::Mat R, t;
 		haveMove = 0;
 		cap >> frame;
@@ -1617,8 +1614,8 @@ void CRealPlayDlg::Paint(Camera *cam, Mat &frame) {
 		}
 		angles = Eigen::Vector3d(x, y, z);
 		TRACE("Angles : %lf %lf %lf\n", angles(0), angles(1), angles(2));
-		*/
 	}
+		*/
 	CDC* pDC;
 	HDC hDC;
 	CvvImage cimg;
@@ -1665,13 +1662,13 @@ void CRealPlayDlg::Paint(Camera *cam, Mat &frame) {
 		pDC->Rectangle(&drawRect);
 	}
 	if (cam->state == 2 || cam->state == 3) {
-		PathShow(cam);
+		//PathShow(cam);
 	}
 	ReleaseDC(pDC);
 }
 
 void CRealPlayDlg::PathShow(Camera *cam) {
-	if (cam->idx == 2 && cam->path.size() >= 2) {
+	//if (cam->idx == 2 && cam->path.size() >= 2) {
 		CDC* pDC = GetDlgItem(IDC_PATH1_SHOW)->GetDC();
 		CPen pen;
 		pen.CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
@@ -1683,7 +1680,7 @@ void CRealPlayDlg::PathShow(Camera *cam) {
 		pDC->MoveTo(prety, pretx);
 		pDC->LineTo(ty, tx);
 		TRACE("point : %f %f\n ", cam->path[cam->path.size() - 1].second, cam->path[cam->path.size() - 1].first / acos(-1) * 180);
-	}
+	//}
 }
 
 void CRealPlayDlg::myOnLButtonDown(Camera *cam, CPoint point) {
@@ -1758,7 +1755,7 @@ void CRealPlayDlg::OnBnClickedBtnUarmLeft()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	if (m_camera2) {
-		m_camera2->MoveToPolarPosition(10, 0, 0, 12000, 2);
+		m_camera2->Move(10);
 	}
 }
 
@@ -1767,7 +1764,7 @@ void CRealPlayDlg::OnBnClickedBtnUarmRight()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	if (m_camera2) {
-		m_camera2->MoveToPolarPosition(-10, 0, 0, 12000, 2);
+		m_camera2->Move(-10);
 	}
 }
 
@@ -1776,7 +1773,7 @@ void CRealPlayDlg::OnBnClickedBtnUarmStop()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	if (m_camera2) {
-		m_camera2->StopMovement();
+		//m_camera2->StopMovement();
 	}
 }
 
@@ -1785,7 +1782,7 @@ void CRealPlayDlg::OnBnClickedBtnUarmUp()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	if (m_camera2) {
-		m_camera2->MoveToPolarPosition(0, 0, 30, 1000, 2);
+		//m_camera2->MoveToPolarPosition(0, 0, 30, 1000, 2);
 	}
 }
 
@@ -1794,7 +1791,7 @@ void CRealPlayDlg::OnBnClickedBtnUarmDown()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	if (m_camera2) {
-		m_camera2->MoveToPolarPosition(0, 0, -30, 1000, 2);
+		//m_camera2->MoveToPolarPosition(0, 0, -30, 1000, 2);
 	}
 }
 

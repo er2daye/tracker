@@ -1,10 +1,10 @@
 ﻿#include "stdafx.h"
 #include "Camera.h"
-#include <Eigen/Dense>
 
 
 Camera::Camera(void)
 {
+	/*
 	state = 0;
 	move = true;
 	TrackerInit();
@@ -18,9 +18,11 @@ Camera::Camera(void)
 	for (int i = 0; i < 3; i++)
 		real3d.at<double>(i) = -INF_DOUBLE;
 	isopen = false;
+	*/
 	
 }
 
+/*
 Camera::Camera(int idx_, int IDC_CAMERA_SHOW_, int height_, int width_, CnComm *com) 
 	: idx(idx_), IDC_CAMERA_SHOW(IDC_CAMERA_SHOW_), heightOfScreen(height_), widthOfScreen(width_), m_com(com), state (0), isopen(false) {
 	move = true;
@@ -61,8 +63,6 @@ Camera::Camera(int idx_, int IDC_CAMERA_SHOW_, int height_, int width_, CnComm *
 		K.at<double>(2, 2) = 1;
 		//0.994572, -0.0687067, 0.0765522, -0.0156602
 		//-0.218924, -3.18991, -3.07441
-		input_t = "-0.379886, -3.43864, -3.63572";
-		input_q = "0.995834, -0.0815083, 0.0398277, -0.00915502";
 	}
 	sscanf(input_t.c_str(), "%lf,%lf,%lf", &tx, &ty, &tz);
 	sscanf(input_q.c_str(), "%lf,%lf,%lf,%lf", &qw, &qx, &qy, &qz);
@@ -85,6 +85,7 @@ Camera::Camera(int idx_, int IDC_CAMERA_SHOW_, int height_, int width_, CnComm *
 	bottomCornerOfShowBox = CPoint(0, 0);
 	angleAlly = 0;
 }
+*/
 
 Camera::~Camera(void)
 {
@@ -118,7 +119,6 @@ void Camera::CapturePicture(int cameraModel) {
 	
     
 }
-*/
 void Camera::OpenArm() {
 	if(m_com->IsOpen()){
 		m_com->Close();
@@ -136,11 +136,13 @@ void Camera::Open(){
 		cap.set(CAP_PROP_FRAME_WIDTH, 1280.0);
 		cap.set(CAP_PROP_FRAME_HEIGHT, 720.0);
 }
+*/
 
 void Camera::UpdateFrame(const cv::Mat &image) {
 	image.copyTo(frame);
 }
 
+/*
 cv::Mat Camera::GetFrame() {
 	cv::Mat frame;
 	if (idx != 1) {
@@ -167,7 +169,8 @@ void Camera::Send(string data){
 	if(!m_com || !m_com->IsOpen()) return;
 	const char *buf = data.c_str();
 	m_com->Write(buf); 
-}
+}m_camera2
+
 void Camera::MoveToAbsolutePosition(double x, double y, double z, double speed, int model) {
     if (!m_com || !m_com->IsOpen()) {
 		MessageBox(NULL, "ERROR","connect failed", MB_OK);
@@ -205,6 +208,7 @@ void Camera::StopMovement() {
 	code = "V0\n";
     Send(code);
 } 
+*/
 
 
 
@@ -259,57 +263,6 @@ void Camera::TrackFromReal3D(const cv::Mat &pt3d) {
 	return;
 }
 
-void Camera::CameraMove(int cameraModel) {
-	cv::Point2f object2d = pixel2cam(centerOfBox, K);
-	cv::Point2f window2d = pixel2cam(centerOfImage, K);
-	float lobj = sqrt(object2d.x * object2d.x + 1);
-	float lwin = sqrt(window2d.x * window2d.x + 1);
-	float cross = (object2d.x * window2d.x + 1) / lobj / lwin;
-	float angley = acosf(cross);
-	if (object2d.x > 0) angley *= -1;
-	/*
-	TRACE("object in image2d %f %f\n", centerOfBox.x, centerOfBox.y);
-	TRACE("image2d %f %f\n", centerOfImage.x, centerOfImage.y);
-	TRACE("object2d %f %f\n", object2d.x, object2d.y);
-	TRACE("angle %f\n", angley);
-	TRACE("angle degree %f\n", angley / acos(-1) * 180);
-	*/
-
-	//if you don't want to move
-	//move = false;
-	//Recive();
-
-	if (idx == 2 && move) {
-		angley = angley / acos(-1) * 180;
-		double tdeg = angleAlly + angley;
-		double tdis = 1.0 * (preBoundingBox.width + preBoundingBox.height) / (boundingBox.width + boundingBox.height);
-		path.push_back(make_pair(tdeg / 180 * acos(-1), tdis));
-		//9 / 60 * 30 = 4.5
-		if (fabs(angley) < 0.5) {
-			TRACE("angle all %f\n", angleAlly);
-			return;
-		}
-		//if (fabs(angley) < 2) move = !move;
-		if (fabs(angley) > 5) angley = angley / fabs(angley) * 5;
-		MoveToPolarPosition(angley, 0, 0, 6000, 2);
-		angleAlly += angley;
-		Eigen::Matrix3d angleMatrix = Eigen::AngleAxisd(angley / 180 * acos(-1), Eigen::Vector3d::UnitY()).matrix();
-		cv::Mat Rnow = cv::Mat::eye(4, 4, CV_64F);
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) Rnow.at<double>(i, j) = angleMatrix(i, j);
-		}
-		T *= Rnow;
-		move = false;
-	}
-	else if (!move) {
-		//move = !move;
-	}
-	TRACE("angle all %f\n", angleAlly);
-	
-	//move = !move;
-	puts("test");
-}
-
 void Camera::SetReal3D(const cv::Mat &pt) {
 	real3d = T.rowRange(0, 3).colRange(0, 3) * pt + T.rowRange(0, 3).col(3);
 	preBoundingBox = boundingBox;
@@ -332,6 +285,7 @@ cv::Mat Camera::GetReal3D() {
 	TRACE("Point guess %f %f %f \n", pt.at<double>(0), pt.at<double>(1), pt.at<double>(2));
 	return pt;
 }
+/*
 
 void Camera::CameraMoveFromReal3D(int cameraModel, cv::Mat pt3d) {
 	cv::Mat pt = T.rowRange(0, 3).colRange(0, 3) * pt3d + T.rowRange(0, 3).col(3);
@@ -385,19 +339,53 @@ void Camera::CameraMoveFromReal3D(int cameraModel, cv::Mat pt3d) {
 
 }
 
-void Camera::Recive() {
-	while (true) {
-		if (isopen) {
-			char cRx[1024];
-			memset(cRx, 0, sizeof(cRx));
-			CString strTemp;
-			m_com->Read(cRx, 1024);
-			strTemp.Format("%s", cRx);
-			if (cRx[0] == 'o' && cRx[1] == 'k') {
-				move = true;
-			}
+void Camera::CameraMove(int cameraModel) {
+	cv::Point2f object2d = pixel2cam(centerOfBox, K);
+	cv::Point2f window2d = pixel2cam(centerOfImage, K);
+	float lobj = sqrt(object2d.x * object2d.x + 1);
+	float lwin = sqrt(window2d.x * window2d.x + 1);
+	float cross = (object2d.x * window2d.x + 1) / lobj / lwin;
+	float angley = acosf(cross);
+	if (object2d.x > 0) angley *= -1;
+	TRACE("object in image2d %f %f\n", centerOfBox.x, centerOfBox.y);
+	TRACE("image2d %f %f\n", centerOfImage.x, centerOfImage.y);
+	TRACE("object2d %f %f\n", object2d.x, object2d.y);
+	TRACE("angle %f\n", angley);
+	TRACE("angle degree %f\n", angley / acos(-1) * 180);
 
-			TRACE("test recive : %s\n", cRx);
+	//if you don't want to move
+	//move = false;
+	//Recive();
+
+	if (idx == 2 && move) {
+		angley = angley / acos(-1) * 180;
+		double tdeg = angleAlly + angley;
+		double tdis = 1.0 * (preBoundingBox.width + preBoundingBox.height) / (boundingBox.width + boundingBox.height);
+		path.push_back(make_pair(tdeg / 180 * acos(-1), tdis));
+		//9 / 60 * 30 = 4.5
+		if (fabs(angley) < 0.5) {
+			TRACE("angle all %f\n", angleAlly);
+			return;
 		}
+		//if (fabs(angley) < 2) move = !move;
+		if (fabs(angley) > 5) angley = angley / fabs(angley) * 5;
+		MoveToPolarPosition(angley, 0, 0, 6000, 2);
+		angleAlly += angley;
+		Eigen::Matrix3d angleMatrix = Eigen::AngleAxisd(angley / 180 * acos(-1), Eigen::Vector3d::UnitY()).matrix();
+		cv::Mat Rnow = cv::Mat::eye(4, 4, CV_64F);
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) Rnow.at<double>(i, j) = angleMatrix(i, j);
+		}
+		T *= Rnow;
+		move = false;
 	}
+	else if (!move) {
+		//move = !move;
+	}
+	TRACE("angle all %f\n", angleAlly);
+	
+	//move = !move;
+	puts("test");
 }
+*/
+

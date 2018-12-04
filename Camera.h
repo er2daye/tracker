@@ -13,14 +13,15 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <thread>
+#include <Eigen/Dense>
 using namespace cv;
 using namespace std;
 class Camera
 {
 public:
-	int idx;
+	//int idx;
 	Camera(void);
-	Camera(int idx_, int IDC_CAMERA_SHOW_, int height_, int width_, CnComm *com = NULL);
+	//Camera(int idx_, int IDC_CAMERA_SHOW_, int height_, int width_, CnComm *com = NULL);
 	~Camera(void);
 	Mat frame;
 	bool isTracking;
@@ -42,10 +43,6 @@ public:
 	void TrackerInit();
 	bool TrackFromImage(Mat nowFrame);
 	void TrackFromReal3D(const cv::Mat &pt3d);
-
-	void CameraMove(int cameraModel);
-
-	void CameraMoveFromReal3D(int cameraModel, cv::Mat pt3d);
 
 	// Set Real3d From triangulation
 	// Update real3d, offset, depth
@@ -70,13 +67,21 @@ public:
 
 	//0: not tracking 1: already to tracking 2: tracking 3:lost but in 4:lost
 	int state;
+	void UpdateFrame(const cv::Mat &image);
+	virtual void CameraMove() = 0;
+	virtual void OpenPlatform() = 0;
 
+	virtual cv::Mat GetFrame() = 0;
+	virtual void Move(double deg) = 0;
+	virtual void Reset() = 0;
+	virtual void Open() = 0;
+
+	/*
 	//camera2
 	bool isopen;
 	VideoCapture cap;
 	CnComm *m_com;
 	Mat GetFrame();
-	void UpdateFrame(const cv::Mat &image);
 	void OpenArm();
 	void Open();
 	void Close();
@@ -86,5 +91,6 @@ public:
 	void MoveToAbsolutePosition(double x, double y, double z, double speed, int model);
     void MoveToPolarPosition(double r, double s, double h, double speed, int model);
 	void StopMovement();
+	*/
 };
 

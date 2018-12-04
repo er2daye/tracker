@@ -192,9 +192,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="5point.h" />
+    <ClInclude Include="ACamera.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CvvImage.h" />
     <ClInclude Include="DlgPTZCruise.h" />
+    <ClInclude Include="FCamera.h" />
     <ClInclude Include="GeneralDef.h" />
     <ClInclude Include="kcf\ffttools.h" />
     <ClInclude Include="kcf\fhog.h" />
@@ -218,9 +220,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="5point.cpp" />
+    <ClCompile Include="ACamera.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="DlgPTZCruise.cpp" />
+    <ClCompile Include="FCamera.cpp" />
     <ClCompile Include="kcf\fhog.cpp" />
     <ClCompile Include="kcf\kcftracker.cpp" />
     <ClCompile Include="PoseCalculator.cpp" />

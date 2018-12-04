@@ -11,6 +11,8 @@
 #include "GeneralDef.h"
 #include "PTZButton.h"
 #include "Camera.h"
+#include "ACamera.h"
+#include "FCamera.h"
 #include "kcf\kcftracker.h"
 #include "PoseCalculator.h"
 /////////////////////////////////////////////////////////////////////////////

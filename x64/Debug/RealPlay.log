@@ -1,37 +1,7 @@
-﻿生成启动时间为 2018/12/2 21:49:09。
+﻿生成启动时间为 2018/12/4 10:39:23。
      1>项目“E:\icme2019\RealPlay\RealPlay\RealPlay.vcxproj”在节点 2 上(Build 个目标)。
-     1>ClCompile:
-         D:\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /ID:\Downloads\opencv\build\include /ID:\Downloads\opencv\build\include\opencv2 /ID:\Downloads\opencv\build\include\opencv /I"D:\eigen-3.3.4" /Zi /nologo /W3 /WX- /sdl /Od /D WIN32 /D _WINDOWS /D _DEBUG /D _CRT_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_DEPRECATE /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Camera.cpp
-         Camera.cpp
-     1>D:\Microsoft Visual Studio 12.0\VC\atlmfc\include\afx.h(38): warning C4996: 'MBCS_Support_Deprecated_In_MFC': MBCS support in MFC is deprecated and may be removed in a future version of MFC.
-                 D:\Microsoft Visual Studio 12.0\VC\atlmfc\include\afx.h(33) : 参见“MBCS_Support_Deprecated_In_MFC”的声明
-         _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
-     1>e:\icme2019\realplay\realplay\CnComm.h(557): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
-     1>e:\icme2019\realplay\realplay\CnComm.h(564): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
-     1>e:\icme2019\realplay\realplay\CnComm.h(1172): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
-     1>e:\icme2019\realplay\realplay\CnComm.h(1177): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
-     1>e:\icme2019\realplay\realplay\CnComm.h(1210): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
-     1>e:\icme2019\realplay\realplay\CnComm.h(1216): warning C4267: “参数”: 从“size_t”转换到“DWORD”，可能丢失数据
-     1>e:\icme2019\realplay\realplay\CnComm.h(1480): warning C4267: “=”: 从“size_t”转换到“DWORD”，可能丢失数据
-     1>e:\icme2019\realplay\realplay\CnComm.h(1482): warning C4267: “=”: 从“size_t”转换到“DWORD”，可能丢失数据
-     1>D:\Downloads\opencv\build\include\opencv2/core/mat.hpp(1965): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\Downloads\opencv\build\include\opencv2/core/persistence.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\Downloads\opencv\build\include\opencv2/core/utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>Camera.cpp(225): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-     1>Camera.cpp(226): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-     1>Camera.cpp(235): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(236): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
-     1>Camera.cpp(237): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
-     1>Camera.cpp(256): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(271): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(295): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(318): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(319): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
-     1>Camera.cpp(320): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
-     1>Camera.cpp(321): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(323): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(331): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>Camera.cpp(345): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D _DEBUG /D _AFXDLL /l"0x0804" /Ix64\Debug\ /nologo /fo"x64\Debug\RealPlay.res" RealPlay.rc 
        Link:
          D:\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"E:\icme2019\RealPlay\x64\Debug\RealPlay.exe" /INCREMENTAL /NOLOGO /LIBPATH:D:\Downloads\opencv\build\x64\vc12\lib /LIBPATH:./lib/ HCNetSDK.lib opencv_world310d.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"D:\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"E:\icme2019\RealPlay\x64\Debug\RealPlay.pdb" /SUBSYSTEM:WINDOWS /STACK:"16000000" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\icme2019\RealPlay\x64\Debug\RealPlay.lib" /MACHINE:X64 x64\Debug\RealPlay.res
          x64\Debug\5point.obj
@@ -52,4 +22,4 @@
 
 生成成功。
 
-已用时间 00:00:02.83
+已用时间 00:00:00.24

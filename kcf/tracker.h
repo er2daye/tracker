@@ -35,6 +35,7 @@ public:
 
 public:
     cv::Rect_<float> _roi;
+	float last_fail_value;
 };
 
 

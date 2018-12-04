@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Camera.h"
 #include <Eigen/Dense>
 
@@ -17,10 +17,12 @@ Camera::Camera(void)
 	real3d = cv::Mat(3, 1, CV_64F);
 	for (int i = 0; i < 3; i++)
 		real3d.at<double>(i) = -INF_DOUBLE;
+	isopen = false;
+	
 }
 
 Camera::Camera(int idx_, int IDC_CAMERA_SHOW_, int height_, int width_, CnComm *com) 
-	: idx(idx_), IDC_CAMERA_SHOW(IDC_CAMERA_SHOW_), heightOfScreen(height_), widthOfScreen(width_), m_com(com), state (0) {
+	: idx(idx_), IDC_CAMERA_SHOW(IDC_CAMERA_SHOW_), heightOfScreen(height_), widthOfScreen(width_), m_com(com), state (0), isopen(false) {
 	move = true;
 	real3d = cv::Mat(3, 1, CV_64F);
 	for (int i = 0; i < 3; i++)
@@ -47,8 +49,8 @@ Camera::Camera(int idx_, int IDC_CAMERA_SHOW_, int height_, int width_, CnComm *
 		//0.99663, 0.0818709, 0.00111595, -0.00485828
 		//0.99663, 0.0818709, 0.00111595, -0.00485828
 		//-0.800911, 2.1634, 4.9686
-		input_t = "-0.520842, 1.70941, 4.49782";
-		input_q = "0.999804, -0.0097383, 0.0148609, 0.0087686";
+		input_t = "-0.474525, 1.83571, 4.19936";
+		input_q = "0.99579, 0.0712218, -0.0568529, 0.00989473";
 	}
 	if (idx == 3) {
 		K = cv::Mat::zeros(3, 3, CV_64F);
@@ -59,8 +61,8 @@ Camera::Camera(int idx_, int IDC_CAMERA_SHOW_, int height_, int width_, CnComm *
 		K.at<double>(2, 2) = 1;
 		//0.994572, -0.0687067, 0.0765522, -0.0156602
 		//-0.218924, -3.18991, -3.07441
-		input_t = "-0.29141, -3.26278, -3.7479";
-		input_q = "0.98468, -0.145097, 0.0966935, 0.00160772";
+		input_t = "-0.379886, -3.43864, -3.63572";
+		input_q = "0.995834, -0.0815083, 0.0398277, -0.00915502";
 	}
 	sscanf(input_t.c_str(), "%lf,%lf,%lf", &tx, &ty, &tz);
 	sscanf(input_q.c_str(), "%lf,%lf,%lf,%lf", &qw, &qx, &qy, &qz);
@@ -124,6 +126,8 @@ void Camera::OpenArm() {
 	if (!m_com->Open(comId, 115200, NOPARITY, 8, ONESTOPBIT)) {
 			MessageBox(NULL, "Fail", "connect", MB_OK);
 	}
+	else isopen = true;
+
 }
 
 void Camera::Open(){
@@ -211,12 +215,27 @@ bool Camera::TrackFromImage(Mat nowFrame) {
         bBoxInit = true;
 		isok = true;
     } else {
-		float value;
-        cv::Rect currentBox = tracker.update(nowFrame, value, isok);
-		TRACE("Here ------------ kcf value : %f\n", value);
+		float value, test_value, next_value;
+		int d[5][2] = {0, 0, -1, -1, -1, 1, 1, -1, 1, 1 };
+		cv::Rect current = tracker._roi;
+		cv::Rect currentBox;
+		test_value = tracker.last_fail_value;
+
+		for (int i = 0; i < 5; i++) {
+			current.x += d[i][0] * current.width / 2;
+			current.y += d[i][1] * current.height / 2;
+			tracker._roi = current;
+			tracker.last_fail_value = test_value;
+			currentBox = tracker.update(nowFrame, value, isok);
+			TRACE("Here ------------ kcf value : %f\n", value);
+			if (!i) next_value = tracker.last_fail_value;
+			if (isok) break;
+		}
 		if (!isok) {
+			tracker.last_fail_value = next_value;
 			return false;
 		}
+		tracker.last_fail_value = 100;
 
 		boundingBox = currentBox;
     }
@@ -232,7 +251,7 @@ void Camera::TrackFromReal3D(const cv::Mat &pt3d) {
 	cv::Mat pt = T.rowRange(0, 3).colRange(0, 3) * pt3d + T.rowRange(0, 3).col(3);
 	cv::Mat ptimage = K * pt;
 	double depth = ptimage.at<double>(2);
-	centerOfBox = cv::Point2f(ptimage.at<double>(0) / depth, ptimage.at<double>(1) / depth) - offset;
+	centerOfBox = cv::Point2f(ptimage.at<double>(0) / depth, ptimage.at<double>(1) / depth);// -offset;
 	boundingBox.x = centerOfBox.x - boundingBox.width / 2;
 	boundingBox.y = centerOfBox.y - boundingBox.height / 2;
 	tracker._roi = boundingBox;
@@ -248,28 +267,31 @@ void Camera::CameraMove(int cameraModel) {
 	float cross = (object2d.x * window2d.x + 1) / lobj / lwin;
 	float angley = acosf(cross);
 	if (object2d.x > 0) angley *= -1;
+	/*
 	TRACE("object in image2d %f %f\n", centerOfBox.x, centerOfBox.y);
 	TRACE("image2d %f %f\n", centerOfImage.x, centerOfImage.y);
 	TRACE("object2d %f %f\n", object2d.x, object2d.y);
 	TRACE("angle %f\n", angley);
 	TRACE("angle degree %f\n", angley / acos(-1) * 180);
-	angley = angley / acos(-1) * 180;
-	double tdeg = angleAlly + angley;
-	double tdis = 1.0 * (preBoundingBox.width + preBoundingBox.height) / (boundingBox.width + boundingBox.height);
-	path.push_back(make_pair(tdeg / 180 * acos(-1), tdis));
+	*/
 
 	//if you don't want to move
 	//move = false;
+	//Recive();
 
 	if (idx == 2 && move) {
+		angley = angley / acos(-1) * 180;
+		double tdeg = angleAlly + angley;
+		double tdis = 1.0 * (preBoundingBox.width + preBoundingBox.height) / (boundingBox.width + boundingBox.height);
+		path.push_back(make_pair(tdeg / 180 * acos(-1), tdis));
 		//9 / 60 * 30 = 4.5
 		if (fabs(angley) < 0.5) {
 			TRACE("angle all %f\n", angleAlly);
 			return;
 		}
-		if (fabs(angley) < 2) move = !move;
-		if (fabs(angley) > 0.6) angley = angley / fabs(angley) * 0.6;
-		MoveToPolarPosition(angley, 0, 0, 12000, 2);
+		//if (fabs(angley) < 2) move = !move;
+		if (fabs(angley) > 5) angley = angley / fabs(angley) * 5;
+		MoveToPolarPosition(angley, 0, 0, 6000, 2);
 		angleAlly += angley;
 		Eigen::Matrix3d angleMatrix = Eigen::AngleAxisd(angley / 180 * acos(-1), Eigen::Vector3d::UnitY()).matrix();
 		cv::Mat Rnow = cv::Mat::eye(4, 4, CV_64F);
@@ -277,9 +299,10 @@ void Camera::CameraMove(int cameraModel) {
 			for (int j = 0; j < 3; j++) Rnow.at<double>(i, j) = angleMatrix(i, j);
 		}
 		T *= Rnow;
+		move = false;
 	}
 	else if (!move) {
-		move = !move;
+		//move = !move;
 	}
 	TRACE("angle all %f\n", angleAlly);
 	
@@ -360,4 +383,21 @@ void Camera::CameraMoveFromReal3D(int cameraModel, cv::Mat pt3d) {
 	//move = !move;
 	puts("test");
 
+}
+
+void Camera::Recive() {
+	while (true) {
+		if (isopen) {
+			char cRx[1024];
+			memset(cRx, 0, sizeof(cRx));
+			CString strTemp;
+			m_com->Read(cRx, 1024);
+			strTemp.Format("%s", cRx);
+			if (cRx[0] == 'o' && cRx[1] == 'k') {
+				move = true;
+			}
+
+			TRACE("test recive : %s\n", cRx);
+		}
+	}
 }

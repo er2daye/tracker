@@ -97,6 +97,8 @@ CRealPlayDlg::CRealPlayDlg(CWnd* pParent /*=NULL*/)
 	m_bAuxOn1= FALSE;
 	m_bAuxOn2= FALSE;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	haveMove = 0;
+	picNum = 0;
 //	m_btnPtzUp.m_realPlay = this;
 //	m_btnPtzDown.m_realPlay = this;
 //	m_btnPtzLeft.m_realPlay = this;
@@ -236,6 +238,7 @@ BOOL CRealPlayDlg::OnInitDialog()
 	m_arm = new CnComm;
 	m_camera1 = new Camera(3, IDC_CAMERA1_SHOW, rect1.Height(), rect1.Width(), m_arm);
 	m_camera2 = new Camera(2, IDC_CAMERA2_SHOW, rect2.Height(), rect2.Width(), m_arm);
+	p_recive = new thread(&Camera::Recive, m_camera2);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -1454,6 +1457,7 @@ void CRealPlayDlg::OnBnClickedBtnCameraOpen()
 	if (!m_arm->Open(comId, 115200, NOPARITY, 8, ONESTOPBIT)) {
 		MessageBox("fail connect");
 	}
+	else m_camera2->isopen = true;
 	m_camera2->Open();
 	m_camera1->Open();
 
@@ -1572,7 +1576,7 @@ void CRealPlayDlg::Track(Camera *cam, Mat &frame) {
 		if (!isok) cam->state = 3;
 		if (isok) cam->state = 2;
 	}
-	if (cam->state == 3) {
+	if (cam->state == 3 && m_camera1->state == 2) {
 		cv::Mat pt3d = m_camera1->GetReal3D();
 		cam->TrackFromReal3D(pt3d);
 	}

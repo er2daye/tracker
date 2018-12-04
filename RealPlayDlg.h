@@ -137,13 +137,15 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
+	thread *p_recive;
+	
 	Camera *m_camera1;
 	Camera *m_camera2;
 	Camera *m_camera3;
 	CnComm *m_arm;
 	PoseCalculator poseCal;
-	int haveMove = 0;
-	int picNum = 0;
+	int haveMove;
+	int picNum;
 	char picBuffer[1300*1000*4];
 	afx_msg LRESULT OnComReceive(WPARAM wParam, LPARAM lParam);  
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

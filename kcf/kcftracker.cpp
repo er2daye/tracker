@@ -94,7 +94,7 @@ KCFTracker::KCFTracker(bool hog, bool fixed_window, bool multiscale, bool lab)
     // Parameters equal in all cases
 	last_fail_value = 100;
     lambda = 0.0001;
-    padding = 3;
+    padding = 2;
     //output_sigma_factor = 0.1;
     output_sigma_factor = 0.125;
 
@@ -180,13 +180,15 @@ cv::Rect KCFTracker::update(cv::Mat image, float &value, bool &isok)
     float cx = _roi.x + _roi.width / 2.0f;
     float cy = _roi.y + _roi.height / 2.0f;
 
+	isok = true;
+
 
     float peak_value;
     cv::Point2f res = detect(_tmpl, getFeatures(image, 0, 1.0f), peak_value);
 	value = peak_value;
-	if (value < last_value - 0.2 && value < last_fail_value + 0.1) {
+	if (value < 0.5 && value < last_value - 0.15 && (value < 0.4 || value < last_fail_value + 0.15)) {
 		isok = false;
-		last_fail_value = last_value;
+		last_fail_value = value;
 		return cv::Rect();
 	}
 
@@ -227,7 +229,7 @@ cv::Rect KCFTracker::update(cv::Mat image, float &value, bool &isok)
     assert(_roi.width >= 0 && _roi.height >= 0);
 
 	value = peak_value;
-	if (value < last_value - 0.15) {
+	if (value < 0.5 && value < last_value - 0.15 && (value < 0.4 || value < last_fail_value + 0.15)) {
 		isok = false;
 		return cv::Rect();
 	}

@@ -12,6 +12,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <thread>
 using namespace cv;
 using namespace std;
 class Camera
@@ -69,8 +70,9 @@ public:
 
 	//0: not tracking 1: already to tracking 2: tracking 3:lost but in 4:lost
 	int state;
-	
+
 	//camera2
+	bool isopen;
 	VideoCapture cap;
 	CnComm *m_com;
 	Mat GetFrame();

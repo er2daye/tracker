@@ -113,6 +113,8 @@ public:
     float scale_step; // scale step for multi-scale estimation
     float scale_weight;  // to downweight detection scores of other scales for added stability
 
+	float last_fail_value;
+
 protected:
     // Detect object in the current frame.
     cv::Point2f detect(cv::Mat z, cv::Mat x, float &peak_value);
@@ -144,7 +146,6 @@ protected:
 
 	//mine
 	float last_value;
-	float last_fail_value;
 	
 
 private:
